@@ -29,7 +29,7 @@ const ure: string[] = [
 
 export default function Timetable() {
 	return (
-		<div className="gird-container">
+		<div className="grid-container">
 			<div className="grid-outer">
 				{Object.keys(dnevi).map((dan, i) => {
 					return <DayColumn key={i} i={i + 2} name={dan} gridAreaName={dnevi[dan]}></DayColumn>;
