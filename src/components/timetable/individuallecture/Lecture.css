@@ -1,0 +1,37 @@
+.grid-entry .description {
+	margin: 3px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.grid-entry .description .row {
+	display: block;
+}
+
+a.link-group {
+	font-size: x-small;
+	color: rgba(23, 23, 23, 0.71);
+}
+
+a.link-subject,
+a.link-classroom {
+	display: inline-block;
+	font-size: larger;
+	font-weight: 600;
+	color: #171717;
+	text-decoration: none;
+	pointer-events: auto;
+}
+
+.entry-type {
+	display: inline-block;
+	color: #222222;
+}
+
+a.link-teacher {
+	font-style: italic;
+	font-size: small;
+}
+.grid-entry .description .top-aligned {
+}
