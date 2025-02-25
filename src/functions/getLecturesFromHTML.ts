@@ -26,10 +26,13 @@ export default function getLecturesFromHTML(
 				.attr("style")
 				?.split(";")
 				.find((el) => el.includes("grid-row"))
-				?.trim() || ""; // || "" da ni undefined slučajno
+				?.replace("grid-row: ", "")
+				.trim() || ""; // || "" da ni undefined slučajno
+
+		const gridArea = $(element).parent().attr("style")?.trim().replace("grid-area: ", "") || "";
 
 		// dobimo predmete
-		const className = $(element).find("a.link-subject").text().trim();
+		const lectureName = $(element).find("a.link-subject").text().trim();
 
 		const classNameHref = $(element).find("a.link-subject").attr("href")?.trim() || "";
 
@@ -51,7 +54,8 @@ export default function getLecturesFromHTML(
 		// naredimo objekt za seznam
 		const lecture = {
 			gridPosition,
-			className,
+			gridArea,
+			lectureName,
 			classNameHref,
 			classType: `| ${typeCleaned}`,
 			classroom,
