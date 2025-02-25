@@ -1,0 +1,19 @@
+.student-number-input-container {
+	margin-top: 0.5rem;
+	width: 100%;
+	display: flex;
+}
+
+.student-number-input {
+	width: 60%;
+	outline: none;
+}
+.student-number-input:focus {
+	outline: none;
+}
+
+.student-number-submit {
+	height: 1.5rem;
+	width: calc(40% - 0.5rem); /* 100% - student-number-input[width] - margin-left*/
+	margin-left: 0.5rem;
+}
