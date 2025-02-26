@@ -10,7 +10,8 @@ export interface IndividualLectureAuditoryOrLaboratoryExcerise {
 	gridPosition: string;
 	gridArea: string;
 	lectureName: string;
-	classNameHref: string;
+    lectureBackgroundColor: string;
+	lectureNameHref: string;
 	classType: string;
 	classroom: string;
 	professor: string;

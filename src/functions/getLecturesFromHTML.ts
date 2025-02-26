@@ -20,21 +20,27 @@ export default function getLecturesFromHTML(
 	const lecturesLV: IndividualLectureAuditoryOrLaboratoryExcerise[] = [];
 
 	$("div.grid-entry").each((_, element) => {
-		// dobimo pozicijo v gridu kjer se nahajaja vaje/predavanje
-		const gridPosition =
-			$(element)
-				.attr("style")
-				?.split(";")
-				.find((el) => el.includes("grid-row"))
-				?.replace("grid-row: ", "")
-				.trim() || ""; // || "" da ni undefined slučajno
+		//
+		// dobimo pozicijo v gridu kjer se nahajaja vaje/predavanje + backgroundColor
+		// [grid-row, background-color]
+		const gridEntryAttributes: [string, string] = ["", ""];
+		$(element)
+			.attr("style")
+			?.split(";")
+			.find((at) => {
+				if (at.includes("grid-row")) {
+					gridEntryAttributes[0] = at.replace("grid-row: ", "").trim();
+				} else if (at.includes("background-color")) {
+					gridEntryAttributes[1] = at.replace("background-color: ", "").trim();
+				}
+			});
 
 		const gridArea = $(element).parent().attr("style")?.trim().replace("grid-area: ", "") || "";
 
 		// dobimo predmete
 		const lectureName = $(element).find("a.link-subject").text().trim();
 
-		const classNameHref = $(element).find("a.link-subject").attr("href")?.trim() || "";
+		const lectureNameHref = $(element).find("a.link-subject").attr("href")?.trim() || "";
 
 		const rawEntryType = $(element).find("span.entry-type").text().trim(); // | P, | AV, | LV
 		const typeCleaned = rawEntryType.replace("|", "").trim(); // | P -> "P"; | AV -> "AV"...
@@ -53,10 +59,11 @@ export default function getLecturesFromHTML(
 
 		// naredimo objekt za seznam
 		const lecture = {
-			gridPosition,
+			gridPosition: gridEntryAttributes[0],
+			lectureBackgroundColor: gridEntryAttributes[1],
 			gridArea,
 			lectureName,
-			classNameHref,
+			lectureNameHref,
 			classType: `| ${typeCleaned}`,
 			classroom,
 			professor,
