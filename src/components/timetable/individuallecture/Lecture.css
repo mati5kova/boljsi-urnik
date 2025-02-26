@@ -1,8 +1,15 @@
+.grid-entry {
+	border-radius: 4px;
+	margin: 1px;
+}
+
 .grid-entry .description {
-	margin: 3px;
+	height: 96%;
+	padding: 3px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+	align-items: flex-start;
 }
 
 .grid-entry .description .row {
@@ -12,6 +19,8 @@
 a.link-group {
 	font-size: x-small;
 	color: rgba(23, 23, 23, 0.71);
+	text-decoration: none;
+	pointer-events: all;
 }
 
 a.link-subject,
@@ -33,5 +42,8 @@ a.link-teacher {
 	font-style: italic;
 	font-size: small;
 }
-.grid-entry .description .top-aligned {
+
+a.link-teacher {
+	text-decoration: none;
+	color: black;
 }
