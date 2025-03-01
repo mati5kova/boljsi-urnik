@@ -3,12 +3,14 @@ import { defaultLecturesAuditoryAndLaboratoryExcersisesObject } from "../constan
 import {
 	IndividualLectureAuditoryOrLaboratoryExcerise,
 	LecturesAuditoryAndLaboratoryExcersises,
+	Season,
 } from "../context/BoljsiUrnikContext";
 import getNewDate from "./getNewDate";
 
 export default function getLecturesFromHTML(
 	htmlAsString: string,
-	urnikURL: string
+	urnikURL: string,
+	seasonalPartOfUrl: Season
 ): LecturesAuditoryAndLaboratoryExcersises {
 	if (!htmlAsString) {
 		return defaultLecturesAuditoryAndLaboratoryExcersisesObject;
@@ -81,6 +83,7 @@ export default function getLecturesFromHTML(
 	});
 
 	return {
+		seasonId: seasonalPartOfUrl,
 		dateOfRequest: getNewDate(),
 		lecturesP,
 		lecturesAV,

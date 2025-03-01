@@ -30,7 +30,7 @@ export default function App() {
 				throw new Error(`HTTP error! status: ${response.status}`);
 			} else {
 				const data = await response.text();
-				const extractedLectures = getLecturesFromHTML(data, url);
+				const extractedLectures = getLecturesFromHTML(data, url, urnikFriSeasonalPartOfUrl);
 				setLecturesAuditoryAndLaboratoryExcersises(extractedLectures);
 				console.log(extractedLectures);
 			}
@@ -76,7 +76,6 @@ export default function App() {
 	return (
 		<>
 			<Header />
-			{getUrnikFriUrl(urnikFriSeasonalPartOfUrl, studentNumber)}
 			<Timetable />
 		</>
 	);

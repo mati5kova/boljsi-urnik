@@ -10,7 +10,7 @@ export interface IndividualLectureAuditoryOrLaboratoryExcerise {
 	gridPosition: string;
 	gridArea: string;
 	lectureName: string;
-    lectureBackgroundColor: string;
+	lectureBackgroundColor: string;
 	lectureNameHref: string;
 	classType: string;
 	classroom: string;
@@ -19,6 +19,7 @@ export interface IndividualLectureAuditoryOrLaboratoryExcerise {
 }
 
 export interface LecturesAuditoryAndLaboratoryExcersises {
+	seasonId: Season;
 	dateOfRequest: Date;
 	lecturesP: IndividualLectureAuditoryOrLaboratoryExcerise[];
 	lecturesAV: IndividualLectureAuditoryOrLaboratoryExcerise[];
