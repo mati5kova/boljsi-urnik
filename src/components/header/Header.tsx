@@ -1,10 +1,16 @@
 import { useBoljsiUrnikContext } from "../../context/BoljsiUrnikContext";
 import getCurrentSchoolYear from "../../functions/getCurrentSchoolYear";
+import EditModeSwitch from "./editmodeswitch/EditModeSwitch";
 import "./Header.css";
 import SeasonSwitch from "./seasonswitch/SeasonSwitch";
 import StudentNumberInput from "./studentnumberinput/StudentNumberInput";
+import TimetableReset from "./timetablereset/TimetableReset";
 
-export default function Header() {
+export interface HeaderProps {
+	fetchTimetableFromUrnikFRI: (url: string, controller: AbortController) => Promise<void>;
+}
+
+export default function Header({ fetchTimetableFromUrnikFRI }: HeaderProps) {
 	const schoolYear = getCurrentSchoolYear();
 
 	const { urnikFriSeasonalPartOfUrl, studentNumber } = useBoljsiUrnikContext();
@@ -18,10 +24,14 @@ export default function Header() {
 				<br />
 				<span>{studentNumber}</span>
 			</div>
-			<span className="header-right-side">
+			<div className="header-middle">
 				<SeasonSwitch />
+				<EditModeSwitch />
+			</div>
+			<div className="header-right-side">
 				<StudentNumberInput />
-			</span>
+				<TimetableReset fetchTimetableFromUrnikFRI={fetchTimetableFromUrnikFRI} />
+			</div>
 		</div>
 	);
 }

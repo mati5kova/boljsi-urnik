@@ -8,9 +8,18 @@ import {
 import getNewDate from "./getNewDate";
 
 export default function getLecturesFromHTML(
+	// fetchana zadeva npr. iz App.tsx (useEffect hook)
 	htmlAsString: string,
+
+	// URL
 	urnikURL: string,
-	seasonalPartOfUrl: Season
+
+	// zimski | letni
+	seasonalPartOfUrl: Season,
+
+	// vrednost je true če prihaja zahteva za parsanje samo vaj
+	// torej ko uporabnik pritisne ikono za nastavitev in se v LectureDescription.tsx naredi request na fri urnik z ?subject=....
+	extractOnlyAuditoryAndLaboratoryExcerises: boolean
 ): LecturesAuditoryAndLaboratoryExcersises {
 	if (!htmlAsString) {
 		return defaultLecturesAuditoryAndLaboratoryExcersisesObject;
@@ -22,9 +31,8 @@ export default function getLecturesFromHTML(
 	const lecturesLV: IndividualLectureAuditoryOrLaboratoryExcerise[] = [];
 
 	$("div.grid-entry").each((_, element) => {
-		//
-		// dobimo pozicijo v gridu kjer se nahajaja vaje/predavanje + backgroundColor
-		// [grid-row, background-color]
+		// dobimo pozicijo v gridu kjer se nahajajo vaje/predavanje + backgroundColor
+		// oblika -> [grid-row, background-color]
 		const gridEntryAttributes: [string, string] = ["", ""];
 		$(element)
 			.attr("style")
@@ -66,14 +74,18 @@ export default function getLecturesFromHTML(
 			gridArea,
 			lectureName,
 			lectureNameHref,
-			classType: `| ${typeCleaned}`,
+			classType: typeCleaned, // P, AV, LV (brez |)
 			classroom,
 			professor,
 			groups,
+			// flag pomemben za renderanje v LectureDescription.tsx
+			isTemporaryAndShouldBeTreatedAsSuch: extractOnlyAuditoryAndLaboratoryExcerises ? true : false,
 		};
 
 		// damo stvari v pravi list
-		if (typeCleaned === "P") {
+		//
+		// dodaten pogoj za ziher, čeprav uporabnik itak ne more premikat predavanj
+		if (typeCleaned === "P" && extractOnlyAuditoryAndLaboratoryExcerises == false) {
 			lecturesP.push(lecture);
 		} else if (typeCleaned === "AV") {
 			lecturesAV.push(lecture);

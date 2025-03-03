@@ -1,12 +1,14 @@
 .header {
 	display: flex;
-	height: 4rem;
+	height: 5rem;
 	justify-content: space-between;
 }
 
 .header .title {
 	font-size: 3ex;
 }
+
+.header-middle,
 .header-right-side {
-    width: 13rem;
+	width: 13rem;
 }
