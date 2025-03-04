@@ -43,15 +43,15 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 					...extractedExcersises,
 					lecturesAV: extractedExcersises.lecturesAV.filter(
 						(lecture) =>
-							lecture.gridArea != laale.gridArea &&
-							lecture.gridPosition != laale.gridPosition &&
-							lecture.classroom != laale.classroom
+							lecture.gridArea !== laale.gridArea ||
+							lecture.gridPosition !== laale.gridPosition ||
+							lecture.classroom !== laale.classroom
 					),
 					lecturesLV: extractedExcersises.lecturesLV.filter(
 						(lecture) =>
-							lecture.gridArea != laale.gridArea &&
-							lecture.gridPosition != laale.gridPosition &&
-							lecture.classroom != laale.classroom
+							lecture.gridArea !== laale.gridArea ||
+							lecture.gridPosition !== laale.gridPosition ||
+							lecture.classroom !== laale.classroom
 					),
 				});
 			}
