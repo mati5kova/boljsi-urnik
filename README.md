@@ -1,50 +1,51 @@
-# React + TypeScript + Vite
+[![Netlify Status](https://api.netlify.com/api/v1/badges/78b616c0-a6f3-40bf-b3ae-a5e6482f9563/deploy-status)](https://app.netlify.com/sites/boljsi-urnik/deploys)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Boljši urnik
 
-Currently, two official plugins are available:
+## O projektu
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**Boljši urnik** je samo nadgradnja standardnega urnika Fakultete za računalništvo in informatiko. Namenjen je lažji orientaciji v prvih tednih novega semestra, saj omogoča preurejanje terminov za vaje.
 
-## Expanding the ESLint configuration
+## Uporabljene tehnologije
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+-   **React**
+-   **TypeScript**
 
-- Configure the top-level `parserOptions` property like this:
+## Namestitev in zagon
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+1. **Kloniraj repozitorij:**
+    ```bash
+    git clone https://github.com/mati5kova/boljsi-urnik.git
+    cd boljsi-urnik
+    ```
+2. **Namesti knjižnjice:**
+    ```bash
+    npm install
+    ```
+3. **Zaženi v dev načinu:**
+    ```bash
+    npm run dev
+    ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+# Prispevanje k projektu
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+Hvala, ker želiš prispevati k projektu! Če imaš kakršno koli idejo, predlog za izboljšavo ali pa najdeš bug prosim odpri issue ali pa naredi pull request. Naslednji del je večini samoumeven ampak še vseeno.
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Kako prispevati
+
+1. **Fork** repozitorija na GitHubu.
+2. **Kloniraj** repozitorij na svoj računalnik:
+    ```bash
+    git clone https://github.com/mati5kova/boljsi-urnik.git
+    cd boljsi-urnik
+    ```
+3. **Ustvari novo vejo** (branch) za tvojo spremembo
+    ```bash
+     git checkout -b moj-popravek-ali-izboljsava
+    ```
+4. **Implementiraj** spremembe, če napišeš kakšen komentar bom zelo hvaležen
+5. **Push-aj** spremembe na GitHub
+    ```bash
+    git push origin moj-popravek-ali-izboljsava
+    ```
+6. **Odpri pull request** kjer na hitro opišeš kaj si naredil/popravil itd.
