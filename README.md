@@ -1,4 +1,7 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/78b616c0-a6f3-40bf-b3ae-a5e6482f9563/deploy-status)](https://app.netlify.com/sites/boljsi-urnik/deploys)
+| Environment                                         | Deployment Status                                                                                                                                                     |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Production](https://boljsi-urnik.netlify.app)      | [![Netlify Status](https://api.netlify.com/api/v1/badges/78b616c0-a6f3-40bf-b3ae-a5e6482f9563/deploy-status)](https://app.netlify.com/sites/boljsi-urnik/deploys)     |
+| [Development](https://dev-boljsi-urnik.netlify.app) | [![Netlify Status](https://api.netlify.com/api/v1/badges/d515cdc6-3a98-4e09-9407-33b8bef41279/deploy-status)](https://app.netlify.com/sites/dev-boljsi-urnik/deploys) |
 
 # Boljši urnik
 
