@@ -10,33 +10,31 @@ export default function StudentNumberInput() {
 		return /^\d{8}$/.test(String(num));
 	};
 
+	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+		// preven default logično
+		e.preventDefault();
+		if (!isNaN(localStudentNumber) && isEigthDigitNumber(localStudentNumber)) {
+			setStudentNumber(localStudentNumber);
+		}
+	};
+
 	return (
-		<div className="student-number-input-container">
+		<form className="student-number-input-container" onSubmit={handleSubmit}>
 			<input
 				type="number"
 				placeholder="Vpisna številka"
 				className="student-number-input"
 				onChange={(e) => {
 					const newValue: number = e.target.valueAsNumber;
-
 					if (!isNaN(newValue) && isEigthDigitNumber(newValue)) {
-						console.log(newValue);
 						setLocalStudentNumber(newValue);
 					}
 				}}
 				defaultValue={studentNumber}
-			></input>
-			<button
-				type="submit"
-				onClick={() => {
-					if (!isNaN(localStudentNumber) && isEigthDigitNumber(localStudentNumber)) {
-						setStudentNumber(localStudentNumber);
-					}
-				}}
-				className="student-number-submit"
-			>
+			/>
+			<button type="submit" className="student-number-submit">
 				SUBMIT
 			</button>
-		</div>
+		</form>
 	);
 }
