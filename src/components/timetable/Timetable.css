@@ -41,7 +41,12 @@ body {
 	grid-column: 1 / -1;
 	margin: -0.5px;
 	border: thin solid rgba(214, 214, 214, 0.36);
-	z-index: -5;
+	z-index: 1; /* more biti manj kot .grid-entry {z-index: 2;} IN .overlay-to-select-lecture: {z-index: 2} */
+}
+
+.grid-complete-row:hover {
+	border: thin solid rgba(129, 129, 129, 0.6);
+	border-radius: 5px;
 }
 
 .grid-day-column {
@@ -53,4 +58,16 @@ body {
 	padding-left: 2px;
 	padding-right: 2px;
 	border-left: thin solid rgb(237, 237, 237);
+}
+
+@media (max-width: 35em) {
+	.grid-day {
+		font-size: 1.5ex;
+	}
+}
+
+@media (max-width: 30em) {
+	.grid-day {
+		font-size: 1.3ex;
+	}
 }

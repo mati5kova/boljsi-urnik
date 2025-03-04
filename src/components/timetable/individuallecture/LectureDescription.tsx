@@ -176,7 +176,7 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 						{inEditMode == true &&
 						laale.classType !== "P" &&
 						laale.isTemporaryAndShouldBeTreatedAsSuch == false ? (
-							<div className="right-align">
+							<div className="right-aligned">
 								<img
 									src={SettingsSvg}
 									alt=""
