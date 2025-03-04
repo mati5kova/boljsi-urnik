@@ -74,6 +74,9 @@ export default function App() {
 		// fetchej SAMO če je minilo dovolj časa od _DELAY_IN_DAYS_TO_WAIT_BEFORE_ANOTHER_FETCH
 		if (lecturesData && shouldFetchTimetable(lecturesData)) {
 			fetchTimetableFromUrnikFRI(url, controller);
+
+			// brez tega lahko ostanejo npr. RK temp vaje tudi ko spremenimo vs
+			setTemporaryAuditoryAndLaboratoryExcersises(null);
 		}
 
 		isInitialMount.current = false;
@@ -101,6 +104,9 @@ export default function App() {
 			setLetniLecturesAuditoryAndLaboratoryExcersises(defaultLecturesAuditoryAndLaboratoryExcersisesObject);
 			setLetniModifiedLecturesAuditoryAndLaboratoryExcersises(null);
 			setZimskiModifiedLecturesAuditoryAndLaboratoryExcersises(null);
+
+			// brez tega lahko ostanejo npr. RK temp vaje tudi ko spremenimo semester
+			setTemporaryAuditoryAndLaboratoryExcersises(null);
 
 			fetchTimetableFromUrnikFRI(url, controller);
 		}

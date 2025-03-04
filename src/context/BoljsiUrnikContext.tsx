@@ -37,7 +37,7 @@ export interface IndividualLectureAuditoryOrLaboratoryExcerise {
 	// skupine na dnu predmeta npr. 1_BUN_RI, 63215_PAD...
 	groups: string[];
 
-	// property je pomemben za renderanje stvar predvsem v Lecture.tsx
+	// property je pomemben za renderanje stvari predvsem v Lecture.tsx in LectureDescription.tsx
 	// temporaryAuditoryAndLaboratoryExcersises IMAJO isTemporaryAndShouldBeTreatedAsSuch=true
 	// lecturesAuditoryAndLaboratoryExcersises in modifiedLecturesAuditoryAndLaboratoryExcersises imajo isTemporaryAndShouldBeTreatedAsSuch=false
 	isTemporaryAndShouldBeTreatedAsSuch: boolean;

@@ -16,7 +16,6 @@ export default function DayColumn({ i, nameOfDay, gridAreaName }: DayColumnProps
 		zimskiModifiedLecturesAuditoryAndLaboratoryExcersises,
 		letniLecturesAuditoryAndLaboratoryExcersises,
 		letniModifiedLecturesAuditoryAndLaboratoryExcersises,
-		setTemporaryAuditoryAndLaboratoryExcersises,
 	} = useBoljsiUrnikContext();
 
 	// temp zadeve če smo inEditMode in je treba renderat možne zadeve za izbrat
@@ -74,19 +73,7 @@ export default function DayColumn({ i, nameOfDay, gridAreaName }: DayColumnProps
 			<div className="grid-day" style={{ gridColumn: `${i}` }}>
 				{nameOfDay}
 			</div>
-			<div
-				className="grid-day-column"
-				style={{ gridArea: gridAreaName }}
-				// za clearanje tempa
-				onClick={(e) => {
-					// potreben check drugače onClick šteje tudi če pritisnemo Lecture.tsx
-					// hočemo da ko pritisnemo na belo ozadje IN smo inEditMode IN temp != null -> clearamo temp
-					// po gašperjevem predlogu
-					if (e.target === e.currentTarget) {
-						setTemporaryAuditoryAndLaboratoryExcersises(null);
-					}
-				}}
-			>
+			<div className="grid-day-column" style={{ gridArea: gridAreaName }}>
 				{lecturesToRender
 					.filter((laale) => laale.gridArea === gridAreaName)
 					.map((laale, index) => (
