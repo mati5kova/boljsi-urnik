@@ -180,8 +180,8 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 								<img
 									src={SettingsSvg}
 									alt=""
-									height={"15px"}
-									style={{ cursor: "pointer", padding: "2px 0px 0px 0px" }}
+									height={"18px"}
+									style={{ cursor: "pointer", padding: "2px 7px 7px 7px" }}
 									onClick={() => handleSettingsIconClick()}
 								/>
 							</div>
