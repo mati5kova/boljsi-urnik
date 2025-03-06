@@ -17,7 +17,7 @@ export default function Header({ fetchTimetableFromUrnikFRI }: HeaderProps) {
 
 	return (
 		<div className="header">
-			<div>
+			<div className="header-left">
 				<span className="title">
 					{`FRI ${schoolYear[0]}/${schoolYear[1]}, ${urnikFriSeasonalPartOfUrl} semester`}
 				</span>
@@ -28,7 +28,7 @@ export default function Header({ fetchTimetableFromUrnikFRI }: HeaderProps) {
 				<SeasonSwitch />
 				<EditModeSwitch />
 			</div>
-			<div className="header-right-side">
+			<div className="header-right">
 				<StudentNumberInput />
 				<TimetableReset fetchTimetableFromUrnikFRI={fetchTimetableFromUrnikFRI} />
 			</div>

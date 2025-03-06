@@ -1,7 +1,14 @@
+.switch-container {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
 .season-switch {
 	position: relative;
 	display: flex;
-	width: 100%;
+	width: 14rem;
 	height: 2rem;
 	margin: 0;
 	background-color: #e0e0e0;
@@ -35,4 +42,47 @@
 
 .switch-button.active {
 	color: #fff;
+}
+
+@media (max-width: 840px) {
+	.season-switch {
+		width: 10rem;
+	}
+
+	.switch-button {
+		font-size: 14px;
+	}
+}
+
+@media (max-width: 550px) {
+	.season-switch {
+		width: 8rem;
+	}
+
+	.switch-button {
+		font-size: 14px;
+	}
+}
+
+@media (max-width: 420px) {
+	.season-switch {
+		width: 7.2rem;
+		height: 2rem;
+	}
+
+	.switch-button {
+		font-size: 13px;
+	}
+}
+
+@media (max-width: 390px) {
+	.season-switch {
+		width: 6rem;
+		height: 1.5rem;
+	}
+
+	.switch-button {
+		font-size: 9px;
+        font-weight: 600;
+	}
 }

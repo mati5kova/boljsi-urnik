@@ -19,22 +19,24 @@ export default function StudentNumberInput() {
 	};
 
 	return (
-		<form className="student-number-input-container" onSubmit={handleSubmit}>
-			<input
-				type="number"
-				placeholder="Vpisna številka"
-				className="student-number-input"
-				onChange={(e) => {
-					const newValue: number = e.target.valueAsNumber;
-					if (!isNaN(newValue) && isEigthDigitNumber(newValue)) {
-						setLocalStudentNumber(newValue);
-					}
-				}}
-				defaultValue={studentNumber}
-			/>
-			<button type="submit" className="student-number-submit">
-				SUBMIT
-			</button>
-		</form>
+		<div className="student-number-form-container">
+			<form className="student-number-input-container" onSubmit={handleSubmit}>
+				<input
+					type="number"
+					placeholder="Vpisna številka"
+					className="student-number-input"
+					onChange={(e) => {
+						const newValue: number = e.target.valueAsNumber;
+						if (!isNaN(newValue) && isEigthDigitNumber(newValue)) {
+							setLocalStudentNumber(newValue);
+						}
+					}}
+					defaultValue={studentNumber}
+				/>
+				<button type="submit" className="student-number-submit">
+					SUBMIT
+				</button>
+			</form>
+		</div>
 	);
 }

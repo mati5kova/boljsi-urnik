@@ -2,13 +2,33 @@
 	display: flex;
 	height: 5rem;
 	justify-content: space-between;
+	width: 100%;
 }
 
 .header .title {
 	font-size: 3ex;
 }
 
+.header-left,
 .header-middle,
-.header-right-side {
-	width: 13rem;
+.header-right {
+	width: 33%;
+}
+
+.header-middle {
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+}
+
+.header-right {
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+}
+
+@media (max-width: 35em) {
+	.header-left {
+		font-size: 1.3ex;
+	}
 }

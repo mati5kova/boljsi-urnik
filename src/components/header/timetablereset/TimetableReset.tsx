@@ -1,7 +1,7 @@
 import { useBoljsiUrnikContext } from "../../../context/BoljsiUrnikContext";
 import getUrnikFriUrl from "../../../functions/getUrnikFriUrl";
 import { HeaderProps } from "../Header";
-import "./TimetableRest.css";
+import "./TimetableReset.css";
 
 export default function TimetableReset({ fetchTimetableFromUrnikFRI }: HeaderProps) {
 	const {
