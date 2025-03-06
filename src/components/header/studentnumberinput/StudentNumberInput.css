@@ -25,6 +25,25 @@
 	box-sizing: border-box;
 }
 
+input,
+.student-number-submit,
+.timetable-reset-button {
+	border-radius: 0;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
+.student-number-submit:hover, .timetable-reset-button:hover {
+    background-color: rgb(234, 233, 233);
+}
+
+input[type="text"],
+input[type="button"],
+input[type="submit"] {
+	background-color: #d3d3d3;
+}
+
 @media (max-width: 830px) {
 	.student-number-input {
 		width: 100%;
