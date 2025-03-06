@@ -1,3 +1,5 @@
 .edit-mode-switch {
-	margin-top: 0.5rem !important;
+	/**V**/
+	margin-top: 5% !important; 
+	border-radius: 8px !important;
 }

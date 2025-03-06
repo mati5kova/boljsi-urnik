@@ -1,5 +1,11 @@
 body {
+	/**V**/
+	margin-top: 1%;
+	margin-bottom: 1%;
+
+
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-weight: 450;
 }
 
 .grid-outer {
@@ -23,6 +29,8 @@ body {
 		"h dayMON dayTUE dayWED dayTHU dayFRI"
 		"h dayMON dayTUE dayWED dayTHU dayFRI"
 		"h dayMON dayTUE dayWED dayTHU dayFRI";
+		/**V**/
+		margin: 5%;
 }
 
 .grid-day {
