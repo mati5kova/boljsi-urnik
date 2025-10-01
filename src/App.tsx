@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useSearchParams } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import Header from "./components/header/Header";
 import Timetable from "./components/timetable/Timetable";
 import { defaultLecturesAuditoryAndLaboratoryExcersisesObject } from "./constants/Constants";
@@ -11,6 +11,9 @@ import { shouldFetchTimetable } from "./functions/shouldFetchTimetable";
 export default function App() {
 	const isInitialMount = useRef(true); // initial mount za letni/zimski fetch
 	const isInitialMountTwo = useRef(true); // initial mount za vpisno številko fetch
+
+	const handledSharedRef = useRef(false); // prepreci dvojni alert v dev modu za malformed shared timetable url
+	const navigate = useNavigate();
 
 	const {
 		urnikFriSeasonalPartOfUrl,
@@ -28,9 +31,28 @@ export default function App() {
 
 	const [urlParams] = useSearchParams();
 	const sharedTimetable = urlParams.get("sharedTimetable");
-	if (sharedTimetable && urlParams.size >= 1) {
-		setIsViewingASharedTimetable(true);
-	}
+	const hasUrlParameters = urlParams.size >= 1;
+
+	useEffect(() => {
+		if (handledSharedRef.current) return;
+		handledSharedRef.current = true;
+
+		if (!(sharedTimetable && hasUrlParameters)) {
+			setIsViewingASharedTimetable(false);
+			return;
+		}
+		try {
+			const decoded = /%[0-9A-Fa-f]{2}/.test(sharedTimetable)
+				? decodeURIComponent(sharedTimetable)
+				: sharedTimetable;
+			JSON.parse(decoded); // samo za potrebe validacije, pravi parsing in decoding se zgodi v <DayColumn> -> usememo
+			setIsViewingASharedTimetable(true);
+		} catch (err) {
+			setIsViewingASharedTimetable(false);
+			alert(err + "\n\n\nMalformed link of a shared timetable, redirecting to your timetable");
+			navigate("/", { replace: true });
+		}
+	}, [sharedTimetable, hasUrlParameters, setIsViewingASharedTimetable, navigate]);
 
 	// funkcija za fetch in nastavitev base urnika glede na semester
 	// passano tudi v Header.tsx -> reset timetable
