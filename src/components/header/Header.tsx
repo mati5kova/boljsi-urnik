@@ -13,25 +13,30 @@ export interface HeaderProps {
 export default function Header({ fetchTimetableFromUrnikFRI }: HeaderProps) {
 	const schoolYear = getCurrentSchoolYear();
 
-	const { urnikFriSeasonalPartOfUrl, studentNumber } = useBoljsiUrnikContext();
+	const { urnikFriSeasonalPartOfUrl, studentNumber, isViewingASharedTimetable } = useBoljsiUrnikContext();
 
 	return (
-		<div className="header">
+		<header className="header">
 			<div className="header-left">
 				<span className="title">
 					{`FRI ${schoolYear[0]}/${schoolYear[1]}, ${urnikFriSeasonalPartOfUrl} semester`}
 				</span>
-				<br />
-				<span>{studentNumber}</span>
+				{!isViewingASharedTimetable ? <span>{studentNumber}</span> : <span>Viewing a shared timetable</span>}
 			</div>
-			<div className="header-middle">
-				<SeasonSwitch />
-				<EditModeSwitch />
-			</div>
-			<div className="header-right">
-				<StudentNumberInput />
-				<TimetableReset fetchTimetableFromUrnikFRI={fetchTimetableFromUrnikFRI} />
-			</div>
-		</div>
+
+			{!isViewingASharedTimetable && (
+				<>
+					<div className="header-controls">
+						<SeasonSwitch />
+						<EditModeSwitch />
+					</div>
+
+					<div className="header-actions">
+						<StudentNumberInput />
+						<TimetableReset fetchTimetableFromUrnikFRI={fetchTimetableFromUrnikFRI} />
+					</div>
+				</>
+			)}
+		</header>
 	);
 }

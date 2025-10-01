@@ -1,88 +1,10 @@
-.switch-container {
-	width: 100%;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-}
-
 .season-switch {
-	position: relative;
 	display: flex;
-	width: 14rem;
-	height: 2rem;
-	margin: 0;
-	background-color: #e0e0e0;
-	border-radius: 1rem;
-	overflow: hidden;
+	align-items: center;
+	gap: 0.5rem;
 }
 
-.toggle {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 50%;
-	height: 100%;
-	background-color: #888888;
-	transition: left 0.2s ease;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.switch-button {
-	flex: 1;
-	position: relative;
-	font-size: 18px;
-	background: transparent;
-	border: none;
-	outline: none;
-	color: #555;
-	cursor: pointer;
-	z-index: 1;
-	transition: color 0.3s ease;
-}
-
-.switch-button.active {
-	color: #fff;
-}
-
-@media (max-width: 840px) {
-	.season-switch {
-		width: 10rem;
-	}
-
-	.switch-button {
-		font-size: 14px;
-	}
-}
-
-@media (max-width: 550px) {
-	.season-switch {
-		width: 8rem;
-	}
-
-	.switch-button {
-		font-size: 14px;
-	}
-}
-
-@media (max-width: 420px) {
-	.season-switch {
-		width: 7.2rem;
-		height: 2rem;
-	}
-
-	.switch-button {
-		font-size: 13px;
-	}
-}
-
-@media (max-width: 390px) {
-	.season-switch {
-		width: 6rem;
-		height: 1.5rem;
-	}
-
-	.switch-button {
-		font-size: 9px;
-        font-weight: 600;
-	}
+.season-switch select {
+	padding: 0.25rem 0.5rem;
+	font-size: 0.9rem;
 }

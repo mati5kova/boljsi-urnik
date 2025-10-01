@@ -91,6 +91,11 @@ interface BoljsiUrnikContextType {
 	// vaje znotraj tega so renderane v DayColumn.tsx -> defaultane na []
 	temporaryAuditoryAndLaboratoryExcersises: LecturesAuditoryAndLaboratoryExcersises | null;
 	setTemporaryAuditoryAndLaboratoryExcersises: (value: LecturesAuditoryAndLaboratoryExcersises | null) => void;
+
+	// nastavi se v App.tsx ko se preberejo url parametri
+	// ce je true se vecina stvari v headerju prikaze drugace + urejanje ni omogoceno
+	isViewingASharedTimetable: boolean;
+	setIsViewingASharedTimetable: (value: boolean) => void;
 }
 
 // context z initial value = undefined
@@ -144,6 +149,9 @@ export const BoljsiUrnikProvider = ({ children }: BoljsiUrnikProviderProps) => {
 		null
 	);
 
+	// ali je prikazan z uporabnikom deljen urnik
+	const [isViewingASharedTimetable, setIsViewingASharedTimetable] = useState<boolean>(false);
+
 	return (
 		<BoljsiUrnikContext.Provider
 			value={{
@@ -163,6 +171,8 @@ export const BoljsiUrnikProvider = ({ children }: BoljsiUrnikProviderProps) => {
 				setLetniModifiedLecturesAuditoryAndLaboratoryExcersises,
 				temporaryAuditoryAndLaboratoryExcersises,
 				setTemporaryAuditoryAndLaboratoryExcersises,
+				isViewingASharedTimetable,
+				setIsViewingASharedTimetable,
 			}}
 		>
 			{children}

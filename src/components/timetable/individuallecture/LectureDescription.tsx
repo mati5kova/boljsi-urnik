@@ -165,7 +165,7 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 				<div className="top-aligned">
 					<div className="row first-row">
 						<div className="left-align">
-							<a className="link-subject">{laale.lectureName}&nbsp;</a>
+							<span className="link-subject">{laale.lectureName}&nbsp;</span>
 							<span className="entry-type">
 								{"|"}&nbsp;{laale.classType}
 							</span>
@@ -173,36 +173,44 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 						{/* da se nastavitve pokažejo moreš bit v edit načinu IN lecture type ne sme bit 
                             predavanje (itak jih nimaš kam premaknit) IN lecture mora biti temp flagged
                         */}
-						{inEditMode == true &&
-						laale.classType !== "P" &&
-						laale.isTemporaryAndShouldBeTreatedAsSuch == false ? (
+						{/* edit: prostor za settings zobnik je  */}
+						{laale.classType !== "P" && laale.isTemporaryAndShouldBeTreatedAsSuch == false ? (
 							<div className="right-aligned">
 								<img
 									src={SettingsSvg}
 									alt=""
-									height={"18px"}
-									style={{ cursor: "pointer", padding: "2px 7px 7px 7px" }}
-									onClick={() => handleSettingsIconClick()}
+									height={"20px"}
+									style={{
+										cursor: `${inEditMode ? "pointer" : "auto"}`,
+										padding: "2px 7px 10px 10px",
+										opacity: `${inEditMode ? "100%" : "0%"}`,
+									}}
+									onClick={() => {
+										if (inEditMode) {
+											handleSettingsIconClick();
+										}
+									}}
 								/>
 							</div>
 						) : null}
 					</div>
 					<div className="row">
-						<a className="link-classroom">{laale.classroom}</a>
+						<span className="link-classroom">{laale.classroom}</span>
 					</div>
 
 					<div className="row">
-						<a className="link-teacher">{laale.professor}</a>
+						<span className="link-teacher">{laale.professor}</span>
 					</div>
 				</div>
 				<div className="bottom-aligned">
-					{laale.groups.map((group) => {
-						return (
-							<span className="row" key={group}>
-								<a className="link-group">{group}</a>
-							</span>
-						);
-					})}
+					{laale.groups &&
+						laale.groups.map((group) => {
+							return (
+								<span className="row" key={group}>
+									<span className="link-group">{group}</span>
+								</span>
+							);
+						})}
 				</div>
 			</div>
 		</div>

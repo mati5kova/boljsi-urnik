@@ -1,4 +1,7 @@
-import { useBoljsiUrnikContext } from "../../context/BoljsiUrnikContext";
+import { useSearchParams } from "react-router";
+import { keysToRemove, longToShortLaaleNameKeyMap } from "../../constants/Constants";
+import { IndividualLectureAuditoryOrLaboratoryExcerise, useBoljsiUrnikContext } from "../../context/BoljsiUrnikContext";
+import { expandTimetableData, makeSharableParam } from "../../functions/manipulateSearchParams";
 import Lecture from "./individuallecture/Lecture";
 import "./Timetable.css";
 
@@ -16,6 +19,7 @@ export default function DayColumn({ i, nameOfDay, gridAreaName }: DayColumnProps
 		zimskiModifiedLecturesAuditoryAndLaboratoryExcersises,
 		letniLecturesAuditoryAndLaboratoryExcersises,
 		letniModifiedLecturesAuditoryAndLaboratoryExcersises,
+		setIsViewingASharedTimetable,
 	} = useBoljsiUrnikContext();
 
 	// temp zadeve če smo inEditMode in je treba renderat možne zadeve za izbrat
@@ -59,7 +63,7 @@ export default function DayColumn({ i, nameOfDay, gridAreaName }: DayColumnProps
 	];
 
 	// izberi pravi list glede na semester in/ali je uporabnik že kaj spreminjal urnik
-	const lecturesToRender =
+	let lecturesToRender: IndividualLectureAuditoryOrLaboratoryExcerise[] =
 		urnikFriSeasonalPartOfUrl === "zimski"
 			? zimskiModifiedLecturesAuditoryAndLaboratoryExcersises === null
 				? zimskiDefault
@@ -67,6 +71,33 @@ export default function DayColumn({ i, nameOfDay, gridAreaName }: DayColumnProps
 			: letniModifiedLecturesAuditoryAndLaboratoryExcersises === null
 			? letniDefault
 			: letniModified;
+
+	const [urlParams] = useSearchParams();
+	const sharedTimetable = urlParams.get("sharedTimetable");
+
+	if (sharedTimetable && urlParams.size === 1) {
+		try {
+			let decoded = sharedTimetable;
+			if (/%[0-9A-Fa-f]{2}/.test(sharedTimetable)) {
+				decoded = decodeURIComponent(sharedTimetable);
+			}
+			const parsed = JSON.parse(decoded) as Record<string, unknown>[];
+			lecturesToRender = expandTimetableData(parsed, longToShortLaaleNameKeyMap);
+			setIsViewingASharedTimetable(true);
+		} catch (err) {
+			console.error("URI decode/parse error:", err);
+			setIsViewingASharedTimetable(false);
+		}
+	} else {
+		console.log(
+			"Sharable link:",
+			`${window.location.origin}?sharedTimetable=${makeSharableParam(
+				lecturesToRender,
+				longToShortLaaleNameKeyMap,
+				keysToRemove
+			)}`
+		);
+	}
 
 	return (
 		<>

@@ -1,106 +1,11 @@
-.student-number-form-container {
-	width: 100%;
-	box-sizing: border-box;
-}
-
-.student-number-input-container {
-	display: flex;
-	justify-content: space-between;
-	column-gap: 0.5rem;
-}
-
 .student-number-input {
-	outline: none;
-	width: 75%;
-	box-sizing: border-box;
-}
-.student-number-input:focus {
-	outline: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.student-number-submit {
-	color: black;
-	height: 1.5rem;
-	width: 25%;
-	box-sizing: border-box;
-}
-
-input,
-.student-number-submit,
-.timetable-reset-button {
-	border-radius: 0;
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-}
-
-.student-number-submit:hover, .timetable-reset-button:hover {
-    background-color: rgb(234, 233, 233);
-}
-
-input[type="text"],
-input[type="button"],
-input[type="submit"] {
-	background-color: #d3d3d3;
-}
-
-@media (max-width: 830px) {
-	.student-number-input {
-		width: 100%;
-	}
-	.student-number-submit {
-		width: 40%;
-		height: 2.5rem;
-	}
-
-	.student-number-input-container {
-		flex-direction: column;
-		gap: 0.3rem;
-	}
-
-	.timetable-reset-button {
-		margin-top: 0 !important;
-		position: relative !important;
-		bottom: 2.5rem !important;
-
-		padding: 0.72rem 0 0.6rem 0;
-		margin-left: 1rem;
-		width: 50% !important;
-	}
-}
-
-@media (max-width: 612px) {
-	.timetable-reset-button {
-		padding: 0.15rem 0 0.15rem 0;
-	}
-}
-
-@media (max-width: 521px) {
-	.timetable-reset-button,
-	.student-number-submit {
-		font-size: 10px;
-		font-weight: 500;
-	}
-
-	.timetable-reset-button {
-		padding: 0.8rem 0 0.8rem 0;
-	}
-}
-
-@media (max-width: 472px) {
-	.timetable-reset-button {
-		padding: 0.45rem 0 0.45rem 0;
-	}
-}
-
-@media (max-width: 384px) {
-	.timetable-reset-button,
-	.student-number-submit {
-		font-size: 8px;
-		font-weight: 600;
-	}
-
-	.timetable-reset-button {
-		padding: 0.6rem 0 0.6rem 0;
-	}
+.student-number-input input {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }

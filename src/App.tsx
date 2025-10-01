@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useSearchParams } from "react-router";
 import Header from "./components/header/Header";
 import Timetable from "./components/timetable/Timetable";
 import { defaultLecturesAuditoryAndLaboratoryExcersisesObject } from "./constants/Constants";
@@ -22,7 +23,14 @@ export default function App() {
 		setZimskiModifiedLecturesAuditoryAndLaboratoryExcersises,
 		inEditMode,
 		setTemporaryAuditoryAndLaboratoryExcersises,
+		setIsViewingASharedTimetable,
 	} = useBoljsiUrnikContext();
+
+	const [urlParams] = useSearchParams();
+	const sharedTimetable = urlParams.get("sharedTimetable");
+	if (sharedTimetable && urlParams.size >= 1) {
+		setIsViewingASharedTimetable(true);
+	}
 
 	// funkcija za fetch in nastavitev base urnika glede na semester
 	// passano tudi v Header.tsx -> reset timetable

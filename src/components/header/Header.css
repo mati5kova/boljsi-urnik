@@ -1,34 +1,93 @@
 .header {
 	display: flex;
-	height: 5rem;
-	justify-content: space-between;
+	height: 4rem;
 	width: 100%;
+	justify-content: space-between;
+	max-width: 100lvw;
+	align-items: flex-start;
+	margin-top: 1rem;
+	padding-right: 1rem;
+}
+
+/* levi del */
+.header-left {
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	align-items: center;
+	align-items: flex-start;
+	justify-content: center;
+}
+
+.header-left > * {
+	padding: 0;
+	margin: 0;
 }
 
 .header .title {
 	font-size: 3ex;
 }
 
-.header-left,
-.header-middle,
-.header-right {
-	width: 33%;
-}
-
-.header-middle {
+/* srednji del */
+.header-controls {
 	display: flex;
+	gap: 1rem;
 	align-items: center;
-	flex-direction: column;
 }
 
-.header-right {
-    display: flex;
-    align-items: flex-end;
-    flex-direction: column;
+/* desni del */
+.header-actions {
+	display: flex;
+	gap: 0.75rem;
+	align-items: center;
 }
 
-@media (max-width: 35em) {
-	.header-left {
-		font-size: 1.3ex;
+/* responsive design */
+@media (max-width: 1200px) {
+	.header {
+		height: 5rem;
+	}
+
+	.header-controls,
+	.header-actions {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+}
+
+@media (max-width: 900px) {
+	.header .title {
+		font-size: 2.5ex;
+	}
+}
+
+@media (max-width: 620px) {
+	.header {
+		height: 8.5rem;
+		flex-direction: column;
+		justify-content: flex-start;
+		gap: 1rem;
+	}
+
+	.header-controls,
+	.header-actions {
+		flex-direction: row;
+		align-items: flex-start;
+		align-items: center;
+	}
+
+	.header .title {
+		font-size: 2ex;
+	}
+
+	.student-number-input label {
+		font-size: 1rem;
+	}
+
+	#student-id {
+		width: 5rem;
+		padding: 0.4rem 0.75rem;
 	}
 }

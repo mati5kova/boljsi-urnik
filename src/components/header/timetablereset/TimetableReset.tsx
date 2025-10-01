@@ -30,8 +30,8 @@ export default function TimetableReset({ fetchTimetableFromUrnikFRI }: HeaderPro
 	};
 
 	return (
-		<button type="button" className="timetable-reset-button" onClick={() => handleTimetableReset()}>
-			Reset timetable
+		<button type="button" className="timetable-reset" onClick={() => handleTimetableReset()}>
+			Ponastavi urnik
 		</button>
 	);
 }
