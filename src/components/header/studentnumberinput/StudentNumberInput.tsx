@@ -12,7 +12,7 @@ export default function StudentNumberInput() {
 
 	const handleStudentNumberInputSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		if (!isNaN(Number(localStudentNumber)) && isEigthDigitNumber(localStudentNumber)) {
+		if (!isNaN(Number(localStudentNumber)) && isEigthDigitNumber(Number(localStudentNumber))) {
 			setStudentNumber(Number(localStudentNumber));
 		}
 	};
@@ -24,10 +24,15 @@ export default function StudentNumberInput() {
 				id="student-id"
 				type="text"
 				value={localStudentNumber || ""}
+				placeholder="npr. 63240123"
 				onChange={(e) => {
 					setLocalStudentNumber(e.target.value);
+
+					if (!isNaN(Number(e.target.value)) && isEigthDigitNumber(Number(e.target.value))) {
+						console.log("here", e.target.valueAsNumber);
+						setStudentNumber(Number(e.target.value));
+					}
 				}}
-				placeholder="npr. 63240123"
 			/>
 		</form>
 	);
