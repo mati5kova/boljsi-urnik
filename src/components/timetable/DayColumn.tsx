@@ -20,6 +20,7 @@ export default function DayColumn({ i, nameOfDay, gridAreaName }: DayColumnProps
 		zimskiModifiedLecturesAuditoryAndLaboratoryExcersises,
 		letniLecturesAuditoryAndLaboratoryExcersises,
 		letniModifiedLecturesAuditoryAndLaboratoryExcersises,
+		setActuallyRenderedTimetable,
 	} = useBoljsiUrnikContext();
 
 	const [urlParams] = useSearchParams();
@@ -77,6 +78,8 @@ export default function DayColumn({ i, nameOfDay, gridAreaName }: DayColumnProps
 				? letniDefault
 				: letniModified;
 
+		setActuallyRenderedTimetable(base);
+
 		if (sharedTimetable && hasUrlParameters) {
 			try {
 				const decoded = /%[0-9A-Fa-f]{2}/.test(sharedTimetable)
@@ -111,6 +114,7 @@ export default function DayColumn({ i, nameOfDay, gridAreaName }: DayColumnProps
 		temporaryAuditoryAndLaboratoryExcersises,
 		sharedTimetable,
 		hasUrlParameters,
+		setActuallyRenderedTimetable,
 	]);
 
 	return (

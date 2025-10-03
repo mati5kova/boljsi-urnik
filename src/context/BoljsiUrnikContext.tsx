@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react";
 import { defaultLecturesAuditoryAndLaboratoryExcersisesObject } from "../constants/Constants";
 import getNewDate from "../functions/getNewDate";
 import useLocalStorage from "../hooks/useLocalStorage";
@@ -96,6 +96,10 @@ interface BoljsiUrnikContextType {
 	// ce je true se vecina stvari v headerju prikaze drugace + urejanje ni omogoceno
 	isViewingASharedTimetable: boolean;
 	setIsViewingASharedTimetable: (value: boolean) => void;
+
+	// seznam vaj in predmetov ki je dejansko renderan (pridobljen iz vseh defaultnih, modified in temp seznamov)
+	actuallyRenderedTimetable: IndividualLectureAuditoryOrLaboratoryExcerise[] | null;
+	setActuallyRenderedTimetable: Dispatch<SetStateAction<IndividualLectureAuditoryOrLaboratoryExcerise[]>>;
 }
 
 // context z initial value = undefined
@@ -152,6 +156,10 @@ export const BoljsiUrnikProvider = ({ children }: BoljsiUrnikProviderProps) => {
 	// ali je prikazan z uporabnikom deljen urnik
 	const [isViewingASharedTimetable, setIsViewingASharedTimetable] = useState<boolean>(false);
 
+	const [actuallyRenderedTimetable, setActuallyRenderedTimetable] = useState<
+		IndividualLectureAuditoryOrLaboratoryExcerise[]
+	>([]);
+
 	return (
 		<BoljsiUrnikContext.Provider
 			value={{
@@ -173,6 +181,8 @@ export const BoljsiUrnikProvider = ({ children }: BoljsiUrnikProviderProps) => {
 				setTemporaryAuditoryAndLaboratoryExcersises,
 				isViewingASharedTimetable,
 				setIsViewingASharedTimetable,
+				actuallyRenderedTimetable,
+				setActuallyRenderedTimetable,
 			}}
 		>
 			{children}
