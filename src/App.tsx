@@ -41,6 +41,7 @@ export default function App() {
 			setIsViewingASharedTimetable(false);
 			return;
 		}
+
 		try {
 			const decoded = /%[0-9A-Fa-f]{2}/.test(sharedTimetable)
 				? decodeURIComponent(sharedTimetable)

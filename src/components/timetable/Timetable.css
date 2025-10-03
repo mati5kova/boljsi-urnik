@@ -3,6 +3,7 @@ body {
 }
 
 .grid-outer {
+	margin-bottom: 1rem;
 	display: grid;
 	grid-template-columns: [hour-column-start] 50px [hour-column-end] repeat(5, 1fr);
 	grid-template-rows: [day-row-start] 20px [day-row-end] repeat(15, 1fr);

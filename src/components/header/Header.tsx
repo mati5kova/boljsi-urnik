@@ -16,7 +16,7 @@ export default function Header({ fetchTimetableFromUrnikFRI }: HeaderProps) {
 	const { urnikFriSeasonalPartOfUrl, studentNumber, isViewingASharedTimetable } = useBoljsiUrnikContext();
 
 	return (
-		<header className="header">
+		<header className="header" style={isViewingASharedTimetable ? { height: "4rem" } : undefined}>
 			<div className="header-left">
 				<span className="title">
 					{`FRI ${schoolYear[0]}/${schoolYear[1]}, ${urnikFriSeasonalPartOfUrl} semester`}
