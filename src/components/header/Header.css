@@ -101,6 +101,11 @@
 
 	.header-actions {
 		height: 200px;
-		border: 1px solid red;
+	}
+}
+
+@media (max-width: 252px) {
+	.header {
+		height: 10.5rem;
 	}
 }

@@ -1,8 +1,8 @@
 import { useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router";
-import { keysToRemove, longToShortLaaleNameKeyMap } from "../../constants/Constants";
+import { longToShortLaaleNameKeyMap } from "../../constants/Constants";
 import { IndividualLectureAuditoryOrLaboratoryExcerise, useBoljsiUrnikContext } from "../../context/BoljsiUrnikContext";
-import { expandTimetableData, makeSharableParam } from "../../functions/manipulateSearchParams";
+import { expandTimetableData } from "../../functions/manipulateSearchParams";
 import Lecture from "./individuallecture/Lecture";
 import "./Timetable.css";
 
@@ -92,15 +92,6 @@ export default function DayColumn({ i, nameOfDay, gridAreaName }: DayColumnProps
 				return base;
 			}
 		}
-
-		console.log(
-			"Sharable link:",
-			`${window.location.origin}?sharedTimetable=${makeSharableParam(
-				base,
-				longToShortLaaleNameKeyMap,
-				keysToRemove
-			)}`
-		);
 
 		return base;
 	}, [
