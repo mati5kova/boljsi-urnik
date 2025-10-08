@@ -4,7 +4,7 @@ import getNewDate from "../functions/getNewDate";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 export type Season = "letni" | "zimski";
-export const _CURRENT_MONTH: number = getNewDate().getMonth() + 1; //0-index based -> JAN:0
+export const _CURRENT_MONTH: number = getNewDate().getMonth() + 1; //1-index based -> JAN:1 (zaradi +1)
 
 export interface IndividualLectureAuditoryOrLaboratoryExcerise {
 	// pozicija v grid layoutu (vrstica x razteg): npr. (grid-row: )9 / span 2;
@@ -100,6 +100,11 @@ interface BoljsiUrnikContextType {
 	// seznam vaj in predmetov ki je dejansko renderan (pridobljen iz vseh defaultnih, modified in temp seznamov)
 	actuallyRenderedTimetable: IndividualLectureAuditoryOrLaboratoryExcerise[] | null;
 	setActuallyRenderedTimetable: Dispatch<SetStateAction<IndividualLectureAuditoryOrLaboratoryExcerise[]>>;
+
+	// globalni lock trenutno izbrane vaje med prikazom zacasnih opcij
+	// prepreci dvojne fetche/ponovne klike; pocisti se ob zaprtju overlay-a ali potrditvi novega termina
+	lockedLectureKey: string | null;
+	setLockedLectureKey: (value: string | null) => void;
 }
 
 // context z initial value = undefined
@@ -156,9 +161,14 @@ export const BoljsiUrnikProvider = ({ children }: BoljsiUrnikProviderProps) => {
 	// ali je prikazan z uporabnikom deljen urnik
 	const [isViewingASharedTimetable, setIsViewingASharedTimetable] = useState<boolean>(false);
 
+	// da ni potrebno veckrat ugotavljati kateri urnik naj se rendera, nastavljeno v DayColumn.tsx, uporabljeno v Share.tsx za potrebe
+	// ustvarjanja url-ja za deljen urnik
 	const [actuallyRenderedTimetable, setActuallyRenderedTimetable] = useState<
 		IndividualLectureAuditoryOrLaboratoryExcerise[]
 	>([]);
+
+	// ko uporabnik zacne premikat neke vaje so tiste zaklenjene da se preprecijo dvojni fetchi...
+	const [lockedLectureKey, setLockedLectureKey] = useState<string | null>(null);
 
 	return (
 		<BoljsiUrnikContext.Provider
@@ -183,6 +193,8 @@ export const BoljsiUrnikProvider = ({ children }: BoljsiUrnikProviderProps) => {
 				setIsViewingASharedTimetable,
 				actuallyRenderedTimetable,
 				setActuallyRenderedTimetable,
+				lockedLectureKey,
+				setLockedLectureKey,
 			}}
 		>
 			{children}

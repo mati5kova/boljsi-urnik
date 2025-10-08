@@ -1,3 +1,4 @@
+import { useMemo, useRef } from "react";
 import SettingsSvg from "../../../assets/settings-svgrepo-com.svg";
 import {
 	IndividualLectureAuditoryOrLaboratoryExcerise,
@@ -9,9 +10,13 @@ import getUrnikFriUrl from "../../../functions/getUrnikFriUrl";
 import "./Lecture.css";
 
 export default function LectureDescription(laale: IndividualLectureAuditoryOrLaboratoryExcerise) {
+	// za preprecevanje podvojenih fetchov...
+	const isFetchingRef = useRef(false);
+
 	const {
 		inEditMode,
 		urnikFriSeasonalPartOfUrl,
+		temporaryAuditoryAndLaboratoryExcersises,
 		setTemporaryAuditoryAndLaboratoryExcersises,
 		setLetniModifiedLecturesAuditoryAndLaboratoryExcersises,
 		setZimskiModifiedLecturesAuditoryAndLaboratoryExcersises,
@@ -19,15 +24,35 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 		zimskiLecturesAuditoryAndLaboratoryExcersises,
 		zimskiModifiedLecturesAuditoryAndLaboratoryExcersises,
 		letniModifiedLecturesAuditoryAndLaboratoryExcersises,
+		lockedLectureKey,
+		setLockedLectureKey,
 	} = useBoljsiUrnikContext();
 
+	// stabilen kljuc za trenuten laale
+	const lectureKey = useMemo(
+		() => `${laale.lectureNameHref}|${laale.gridArea}|${laale.gridPosition}|${laale.classType}|${laale.classroom}`,
+		[laale.lectureNameHref, laale.gridArea, laale.gridPosition, laale.classType, laale.classroom]
+	);
+
+	const overlayOpen = temporaryAuditoryAndLaboratoryExcersises !== null;
+
 	const handleSettingsIconClick = async () => {
+		if (isFetchingRef.current) return; // guard
+
+		isFetchingRef.current = true;
+
+		// zaklenemo trenutni laale
+		setLockedLectureKey(lectureKey);
+
 		const controller = new AbortController();
 		const url = getUrnikFriUrl(urnikFriSeasonalPartOfUrl, undefined, laale.lectureNameHref);
 		if (!url) {
 			console.error("Error: Provided URL is invalid or empty.");
+			setLockedLectureKey(null);
+			isFetchingRef.current = false;
 			return;
 		}
+
 		try {
 			const response = await fetch(url, { signal: controller.signal });
 			if (!response.ok) {
@@ -59,14 +84,19 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		} catch (error: any) {
 			if (error.name === "AbortError") {
-				console.log("Fetch aborted: Component unmounted or request cancelled.");
+				console.error("Fetch aborted: Component unmounted or request cancelled.");
 			} else {
 				console.error("Error fetching timetable:", error);
 			}
+			setLockedLectureKey(null);
+		} finally {
+			isFetchingRef.current = false;
 		}
 	};
 
 	const handleNewAuditoryOrLaboratoryExcersiseDateSelected = () => {
+		setLockedLectureKey(null);
+
 		if (!laale.isTemporaryAndShouldBeTreatedAsSuch) return;
 
 		// počistimo temp zadeve ampak ohranimo inEditMode
@@ -76,7 +106,6 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 		const newLecture = { ...laale, isTemporaryAndShouldBeTreatedAsSuch: false };
 
 		if (urnikFriSeasonalPartOfUrl === "letni") {
-			// Use modified timetable if it exists, otherwise fall back to the original unmodified timetable.
 			// uporabi modified urnik (če obstaja) ali pa defaulten urnik fetchan v App.tsx (useEffect hook)
 			const baseTimetable =
 				letniModifiedLecturesAuditoryAndLaboratoryExcersises || letniLecturesAuditoryAndLaboratoryExcersises;
@@ -154,11 +183,39 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 			style={{
 				gridRow: !laale.isTemporaryAndShouldBeTreatedAsSuch ? laale.gridPosition : "",
 				backgroundColor: laale.isTemporaryAndShouldBeTreatedAsSuch ? "lightgray" : laale.lectureBackgroundColor,
+				// cursor je pointer na vseh vajah (torej na ne predavanjih) in ce smo v `inEditMode`
+				cursor:
+					laale.isTemporaryAndShouldBeTreatedAsSuch || (laale.classType !== "P" && inEditMode)
+						? "pointer"
+						: "auto",
+				// cel laale je clickable ce je temp ali inEditMode
+				pointerEvents: inEditMode || laale.isTemporaryAndShouldBeTreatedAsSuch ? "auto" : "none",
 			}}
 			onClick={() => {
+				// ce pritisnemo na temp vaje jih takoj izberemo
 				if (laale.isTemporaryAndShouldBeTreatedAsSuch) {
 					handleNewAuditoryOrLaboratoryExcersiseDateSelected();
+					return;
 				}
+
+				// ce je overlay odprt ga prvi klik kamorkoli zapre
+				if (overlayOpen) {
+					setTemporaryAuditoryAndLaboratoryExcersises(null);
+					setLockedLectureKey(null);
+					return;
+				}
+
+				if (!inEditMode || laale.classType === "P") {
+					return;
+				}
+
+				// ce je lecture zaklenjen ignoriramo klik
+				if (lockedLectureKey === lectureKey) {
+					return;
+				}
+
+				// else - fetchamo moznosti
+				handleSettingsIconClick();
 			}}
 		>
 			<div className="description">
@@ -178,17 +235,25 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 							<div className="right-aligned">
 								<img
 									src={SettingsSvg}
-									alt=""
+									alt="O"
 									height={"20px"}
 									style={{
 										cursor: `${inEditMode ? "pointer" : "auto"}`,
 										padding: "2px 7px 10px 10px",
 										opacity: `${inEditMode ? "100%" : "0%"}`,
+										pointerEvents: inEditMode && lockedLectureKey !== lectureKey ? "auto" : "none",
 									}}
-									onClick={() => {
-										if (inEditMode) {
-											handleSettingsIconClick();
+									onClick={(e) => {
+										e.stopPropagation();
+
+										// overlay dismiss naj dela vedno
+										if (overlayOpen) {
+											setTemporaryAuditoryAndLaboratoryExcersises(null);
+											setLockedLectureKey(null);
+											return;
 										}
+										if (!inEditMode || lockedLectureKey === lectureKey) return;
+										handleSettingsIconClick();
 									}}
 								/>
 							</div>
