@@ -11,8 +11,14 @@ export default function Share() {
 
 	const shareUrl = useMemo(() => {
 		if (!actuallyRenderedTimetable) return "";
+
+		// odstranimo temp vaje iz sharanega urnika ce uborabnik deli urnik med urejanjem
+		const timetableToShare = actuallyRenderedTimetable.filter(
+			(laale) => !laale.isTemporaryAndShouldBeTreatedAsSuch
+		);
+
 		return `${window.location.origin}?sharedTimetable=${makeSharableParam(
-			actuallyRenderedTimetable,
+			timetableToShare,
 			longToShortLaaleNameKeyMap,
 			keysToRemove
 		)}`;
