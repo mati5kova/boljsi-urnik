@@ -2,15 +2,15 @@
 	display: flex;
 	align-items: center;
 	gap: 0.5rem;
-	font-size: 0.9rem;
-	min-width: 13rem;
+	font-size: 0.8rem;
+	min-width: 12rem;
 }
 
 .switch {
 	position: relative;
 	display: inline-block;
-	width: 36px;
-	height: 20px;
+	width: 3.2rem;
+	height: 1.5rem;
 }
 
 .switch input {
@@ -34,10 +34,10 @@
 .slider:before {
 	position: absolute;
 	content: "";
-	height: 14px;
-	width: 14px;
+	height: 1rem;
+	width: 1rem;
 	left: 3px;
-	bottom: 3px;
+	bottom: 4px;
 	background-color: white;
 	transition: 0.2s;
 	border-radius: 50%;
@@ -48,5 +48,5 @@ input:checked + .slider {
 }
 
 input:checked + .slider:before {
-	transform: translateX(16px);
+	transform: translateX(1.75rem);
 }
