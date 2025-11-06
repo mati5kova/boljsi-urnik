@@ -82,7 +82,7 @@
 }
 
 .overlay-to-select-lecture:hover {
-	transform: scale(1.028);
+	transform: scale(1.028) translateX(1px);
 	transition: all 0.05s ease-in-out;
 }
 .overlay-to-select-lecture .grid-entry {
