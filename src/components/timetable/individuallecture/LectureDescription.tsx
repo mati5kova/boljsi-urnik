@@ -13,6 +13,29 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 	// za preprecevanje podvojenih fetchov...
 	const isFetchingRef = useRef(false);
 
+    // uporabi se za preverbo ali fallback rezultati se vedno pripadajo istemu predmetu
+	const getLectureBaseName = (lectureName: string) => lectureName.replace(/_(P|AV|LV)$/, "");
+
+	const getActivityPlusOneHref = (href: string) => {
+        // PAZI!! to se mogoce lahko breaka ampak izgleda da je vzorec sledec:
+        // predmetX_href=1234 -> vajeX_href=predmetX_href+1
+		const match = href.match(/^\?activity=(\d+)$/);
+		if (!match) return null;
+		return `?activity=${Number(match[1]) + 1}`;
+	};
+
+	const hasValidFallbackExercises = (
+		extractedExcersises: ReturnType<typeof getLecturesFromHTML>,
+		clickedLecture: IndividualLectureAuditoryOrLaboratoryExcerise
+	) => {
+        // sprejmemo fallback podatke samo ce vsebujejo vaje za isti predmet
+		const fallbackExercises = [...extractedExcersises.lecturesAV, ...extractedExcersises.lecturesLV];
+		if (fallbackExercises.length === 0) return false;
+
+		const clickedLectureBaseName = getLectureBaseName(clickedLecture.lectureName);
+		return fallbackExercises.every((lecture) => getLectureBaseName(lecture.lectureName) === clickedLectureBaseName);
+	};
+
 	const {
 		inEditMode,
 		urnikFriSeasonalPartOfUrl,
@@ -45,7 +68,12 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 		setLockedLectureKey(lectureKey);
 
 		const controller = new AbortController();
-		const url = getUrnikFriUrl(urnikFriSeasonalPartOfUrl, undefined, laale.lectureNameHref);
+
+		const url = getUrnikFriUrl(
+			urnikFriSeasonalPartOfUrl,
+			undefined,
+			laale.editModeFetchHref || laale.lectureNameHref
+		);
 		if (!url) {
 			console.error("Error: Provided URL is invalid or empty.");
 			setLockedLectureKey(null);
@@ -59,7 +87,35 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 				throw new Error(`HTTP error! status: ${response.status}`);
 			} else {
 				const data = await response.text();
-				const extractedExcersises = getLecturesFromHTML(data, url, urnikFriSeasonalPartOfUrl, true);
+				let extractedExcersises = getLecturesFromHTML(data, url, urnikFriSeasonalPartOfUrl, true);
+
+                // ce fetch ne vrne vaj (NPR. manjkajo ti OS vaje na urniku -> editModeFetchHref==lectureNameHref) probamo umaz trik: number(href)+1
+				const shouldTryFallback =
+					laale.classType === "P" &&
+					extractedExcersises.lecturesAV.length === 0 &&
+					extractedExcersises.lecturesLV.length === 0;
+
+				if (shouldTryFallback) {
+					const fallbackHref = getActivityPlusOneHref(laale.editModeFetchHref || laale.lectureNameHref);
+					if (fallbackHref) {
+						const fallbackUrl = getUrnikFriUrl(urnikFriSeasonalPartOfUrl, undefined, fallbackHref);
+						const fallbackResponse = await fetch(fallbackUrl, { signal: controller.signal });
+
+						if (fallbackResponse.ok) {
+							const fallbackData = await fallbackResponse.text();
+							const fallbackExercises = getLecturesFromHTML(
+								fallbackData,
+								fallbackUrl,
+								urnikFriSeasonalPartOfUrl,
+								true
+							);
+
+							if (hasValidFallbackExercises(fallbackExercises, laale)) {
+								extractedExcersises = fallbackExercises;
+							}
+						}
+					}
+				}
 
 				// naredimo filter po gašperjevem predlogu
 				// ne pokažejo se duplikati vaj
@@ -105,6 +161,12 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 		// naredi nov lecture ampak ne sme bit več temporary flaggan
 		const newLecture = { ...laale, isTemporaryAndShouldBeTreatedAsSuch: false };
 
+        // spet scenarij ko manjkajo npr. OS vaje moramo v urnik dodati medtem ko ostale samo popravimo z novim terminom, ucilnico...
+		const replaceOrAppendLecture = (lectures: IndividualLectureAuditoryOrLaboratoryExcerise[]) =>
+			lectures.some((lecture) => lecture.lectureNameHref === laale.lectureNameHref)
+				? lectures.map((lecture) => (lecture.lectureNameHref === laale.lectureNameHref ? newLecture : lecture))
+				: [...lectures, newLecture];
+
 		if (urnikFriSeasonalPartOfUrl === "letni") {
 			// uporabi modified urnik (če obstaja) ali pa defaulten urnik fetchan v App.tsx (useEffect hook)
 			const baseTimetable =
@@ -122,9 +184,7 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 				setLetniModifiedLecturesAuditoryAndLaboratoryExcersises({
 					...baseTimetable,
 					dateOfRequest: getNewDate(),
-					lecturesAV: baseTimetable.lecturesAV.map((lecture) =>
-						lecture.lectureNameHref === laale.lectureNameHref ? newLecture : lecture
-					),
+					lecturesAV: replaceOrAppendLecture(baseTimetable.lecturesAV),
 				});
 			} else if (laale.classType === "LV") {
 				const originalLecture = baseTimetable.lecturesLV.find(
@@ -136,9 +196,7 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 				setLetniModifiedLecturesAuditoryAndLaboratoryExcersises({
 					...baseTimetable,
 					dateOfRequest: getNewDate(),
-					lecturesLV: baseTimetable.lecturesLV.map((lecture) =>
-						lecture.lectureNameHref === laale.lectureNameHref ? newLecture : lecture
-					),
+					lecturesLV: replaceOrAppendLecture(baseTimetable.lecturesLV),
 				});
 			}
 		} else if (urnikFriSeasonalPartOfUrl === "zimski") {
@@ -155,9 +213,7 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 				setZimskiModifiedLecturesAuditoryAndLaboratoryExcersises({
 					...baseTimetable,
 					dateOfRequest: getNewDate(),
-					lecturesAV: baseTimetable.lecturesAV.map((lecture) =>
-						lecture.lectureNameHref === laale.lectureNameHref ? newLecture : lecture
-					),
+					lecturesAV: replaceOrAppendLecture(baseTimetable.lecturesAV),
 				});
 			} else if (laale.classType === "LV") {
 				const originalLecture = baseTimetable.lecturesLV.find(
@@ -169,9 +225,7 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 				setZimskiModifiedLecturesAuditoryAndLaboratoryExcersises({
 					...baseTimetable,
 					dateOfRequest: getNewDate(),
-					lecturesLV: baseTimetable.lecturesLV.map((lecture) =>
-						lecture.lectureNameHref === laale.lectureNameHref ? newLecture : lecture
-					),
+					lecturesLV: replaceOrAppendLecture(baseTimetable.lecturesLV),
 				});
 			}
 		}
@@ -205,7 +259,7 @@ export default function LectureDescription(laale: IndividualLectureAuditoryOrLab
 					return;
 				}
 
-				if (!inEditMode || laale.classType === "P") {
+				if (!inEditMode) {
 					return;
 				}
 

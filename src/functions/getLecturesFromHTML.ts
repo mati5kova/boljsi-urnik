@@ -25,10 +25,15 @@ export default function getLecturesFromHTML(
 		return defaultLecturesAuditoryAndLaboratoryExcersisesObject;
 	}
 
+    // OPAZKA PAZI!: predavanja in vaje izgleda da imajo vedno? isto ime npr. APS2(63280)_(P|LV) -> nisem se videl primera ko bi npr. en imel stevilke za imenom drugi pa ne
+	const getLectureBaseName = (lectureName: string) => lectureName.replace(/_(P|AV|LV)$/, "");
+
 	const $ = cheerio.load(htmlAsString, { baseURI: urnikURL });
 	const lecturesP: IndividualLectureAuditoryOrLaboratoryExcerise[] = [];
 	const lecturesAV: IndividualLectureAuditoryOrLaboratoryExcerise[] = [];
 	const lecturesLV: IndividualLectureAuditoryOrLaboratoryExcerise[] = [];
+    // en navaden seznam, da je kasneje lazje matchat vaje s predavanji
+	const parsedLectures: IndividualLectureAuditoryOrLaboratoryExcerise[] = [];
 
 	$("div.grid-entry").each((_, element) => {
 		// dobimo pozicijo v gridu kjer se nahajajo vaje/predavanje + backgroundColor
@@ -74,6 +79,7 @@ export default function getLecturesFromHTML(
 			gridArea,
 			lectureName,
 			lectureNameHref,
+			editModeFetchHref: lectureNameHref, // defaultamo na lectureNameHref
 			classType: typeCleaned, // P, AV, LV (brez |)
 			classroom,
 			professor,
@@ -81,6 +87,8 @@ export default function getLecturesFromHTML(
 			// flag pomemben za renderanje v LectureDescription.tsx
 			isTemporaryAndShouldBeTreatedAsSuch: extractOnlyAuditoryAndLaboratoryExcerises ? true : false,
 		};
+
+		parsedLectures.push(lecture);
 
 		// damo stvari v pravi list
 		//
@@ -92,6 +100,20 @@ export default function getLecturesFromHTML(
 		} else if (typeCleaned === "LV") {
 			lecturesLV.push(lecture);
 		}
+	});
+
+    // vaje imajo itak pravilen href fetch target zato se indeksirajo pac bo subject base name
+	const editableHrefByBaseName = new Map<string, string>();
+	parsedLectures.forEach((lecture) => {
+		if (lecture.classType === "LV" || lecture.classType === "AV") {
+			editableHrefByBaseName.set(getLectureBaseName(lecture.lectureName), lecture.lectureNameHref);
+		}
+	});
+
+    // predavanja si sposodijo href target od vaj(ce le te so na urniku - glej `getActivityPlusOneHref` za OS scenarij)
+	lecturesP.forEach((lecture) => {
+		lecture.editModeFetchHref =
+			editableHrefByBaseName.get(getLectureBaseName(lecture.lectureName)) ?? lecture.lectureNameHref;
 	});
 
 	return {

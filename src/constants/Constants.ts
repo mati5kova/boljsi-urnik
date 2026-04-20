@@ -46,6 +46,7 @@ export const keysToRemove = new Set<keyof IndividualLectureAuditoryOrLaboratoryE
 	"groups",
 	"isTemporaryAndShouldBeTreatedAsSuch",
 	"lectureNameHref",
+	"editModeFetchHref",
 ]);
 
 // preslikava imen
@@ -55,6 +56,7 @@ export const longToShortLaaleNameKeyMap: Record<string, string> = {
 	gridArea: "c",
 	lectureName: "d",
 	lectureNameHref: "e",
+	editModeFetchHref: "m",
 	classType: "f",
 	classroom: "g",
 	professor: "h",
