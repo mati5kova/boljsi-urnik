@@ -25,6 +25,10 @@ export interface IndividualLectureAuditoryOrLaboratoryExcerise {
 	// treba za fetchat in parsat vaje ki jih dobimo s pritiskom edit simbola v Lecture.tsx
 	lectureNameHref: string;
 
+	// href, ki se uporabi izkljucno za fetch alternativ v edit modu
+	// VAZNO: pri predavanjih se razlikuje od lectureNameHref, ker mora kazati na pripadajoce vaje
+	editModeFetchHref: string;
+
 	// P | AV | LV
 	classType: string;
 
