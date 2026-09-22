@@ -1,11 +1,10 @@
-import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useState } from "react";
+import { createContext, Dispatch, ReactNode, SetStateAction, useContext, useEffect, useState } from "react";
 import { defaultLecturesAuditoryAndLaboratoryExcersisesObject } from "../constants/Constants";
 import getNewDate from "../functions/getNewDate";
+import { getStoredSchoolYearId } from "../functions/getSchoolYearId";
 import useLocalStorage from "../hooks/useLocalStorage";
 
 export type Season = "letni" | "zimski";
-export const _CURRENT_MONTH: number = getNewDate().getMonth() + 1; //1-index based -> JAN:1 (zaradi +1)
-
 export interface IndividualLectureAuditoryOrLaboratoryExcerise {
 	// pozicija v grid layoutu (vrstica x razteg): npr. (grid-row: )9 / span 2;
 	// css property grid-row se dejansko ne shrani
@@ -51,6 +50,9 @@ export interface LecturesAuditoryAndLaboratoryExcersises {
 	// zimski | letni
 	seasonId: Season;
 
+	// npr. 2026_2027; nujno za ločevanje enakih semestrov v različnih šolskih letih
+	schoolYearId: string;
+
 	// datum zadnjega oz. tega requesta -> uporablja se za preverjanje ali je minilo dovlj časa od zadnjega fetcha
 	dateOfRequest: Date;
 
@@ -70,8 +72,8 @@ interface BoljsiUrnikContextType {
 	setUrnikFriSeasonalPartOfUrl: (value: Season) => void;
 
 	// vpisna številka
-	studentNumber: number;
-	setStudentNumber: (value: number) => void;
+	studentNumber: number | null;
+	setStudentNumber: (value: number | null) => void;
 
 	// predavanje in vaje fetchane v App.tsx (useEffect hook)
 	// ločeno po semestru
@@ -109,6 +111,10 @@ interface BoljsiUrnikContextType {
 	// prepreci dvojne fetche/ponovne klike; pocisti se ob zaprtju overlay-a ali potrditvi novega termina
 	lockedLectureKey: string | null;
 	setLockedLectureKey: (value: string | null) => void;
+
+	// zadnje šolsko leto, ki ga je aplikacija že obravnavala
+	lastActiveSchoolYearId: string | null;
+	setLastActiveSchoolYearId: (value: string | null) => void;
 }
 
 // context z initial value = undefined
@@ -128,7 +134,7 @@ export const BoljsiUrnikProvider = ({ children }: BoljsiUrnikProviderProps) => {
 	// zimski je default value
 	const [urnikFriSeasonalPartOfUrl, setUrnikFriSeasonalPartOfUrl] = useLocalStorage(
 		"seasonalPartOfUrl",
-		[9, 10, 11, 12, 1].includes(_CURRENT_MONTH) ? "zimski" : "letni"
+		[9, 10, 11, 12, 1].includes(getNewDate().getMonth() + 1) ? "zimski" : "letni"
 	); //9, 10, 11, 12, 1 so meseci september, oktober, november, december, januar -> meseci zimskega semestra
 
 	// vpisna številka
@@ -174,6 +180,36 @@ export const BoljsiUrnikProvider = ({ children }: BoljsiUrnikProviderProps) => {
 	// ko uporabnik zacne premikat neke vaje so tiste zaklenjene da se preprecijo dvojni fetchi...
 	const [lockedLectureKey, setLockedLectureKey] = useState<string | null>(null);
 
+	const [lastActiveSchoolYearId, setLastActiveSchoolYearId] = useLocalStorage("lastActiveSchoolYearId", null);
+
+	useEffect(() => {
+		// Stare localStorage objekte nadgradimo brez brisanja urnika ali uporabnikovih prilagoditev.
+		const migrateSchoolYearId = (
+			timetable: LecturesAuditoryAndLaboratoryExcersises | null,
+			setter: (value: LecturesAuditoryAndLaboratoryExcersises | null) => void,
+			preferredSchoolYearId?: string | null
+		) => {
+			if (!timetable || timetable.schoolYearId) return;
+			const inferredSchoolYearId = preferredSchoolYearId ?? getStoredSchoolYearId(timetable);
+			if (inferredSchoolYearId) setter({ ...timetable, schoolYearId: inferredSchoolYearId });
+		};
+
+		migrateSchoolYearId(zimskiLecturesAuditoryAndLaboratoryExcersises, setZimskiLecturesAuditoryAndLaboratoryExcersises);
+		migrateSchoolYearId(letniLecturesAuditoryAndLaboratoryExcersises, setLetniLecturesAuditoryAndLaboratoryExcersises);
+		migrateSchoolYearId(
+			zimskiModifiedLecturesAuditoryAndLaboratoryExcersises,
+			setZimskiModifiedLecturesAuditoryAndLaboratoryExcersises,
+			getStoredSchoolYearId(zimskiLecturesAuditoryAndLaboratoryExcersises)
+		);
+		migrateSchoolYearId(
+			letniModifiedLecturesAuditoryAndLaboratoryExcersises,
+			setLetniModifiedLecturesAuditoryAndLaboratoryExcersises,
+			getStoredSchoolYearId(letniLecturesAuditoryAndLaboratoryExcersises)
+		);
+		// Migracija se izvede samo nad začetnimi vrednostmi localStorage.
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	return (
 		<BoljsiUrnikContext.Provider
 			value={{
@@ -195,10 +231,12 @@ export const BoljsiUrnikProvider = ({ children }: BoljsiUrnikProviderProps) => {
 				setTemporaryAuditoryAndLaboratoryExcersises,
 				isViewingASharedTimetable,
 				setIsViewingASharedTimetable,
-				actuallyRenderedTimetable,
-				setActuallyRenderedTimetable,
-				lockedLectureKey,
-				setLockedLectureKey,
+					actuallyRenderedTimetable,
+					setActuallyRenderedTimetable,
+					lockedLectureKey,
+					setLockedLectureKey,
+					lastActiveSchoolYearId,
+					setLastActiveSchoolYearId,
 			}}
 		>
 			{children}
