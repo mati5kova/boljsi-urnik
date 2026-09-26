@@ -1,22 +1,23 @@
 import { useBoljsiUrnikContext } from "../../../context/BoljsiUrnikContext";
-import getUrnikFriUrl from "../../../functions/getUrnikFriUrl";
-import { HeaderProps } from "../Header";
+import type { HeaderProps } from "../Header";
 import "./TimetableReset.css";
 
-export default function TimetableReset({ fetchTimetableFromUrnikFRI }: HeaderProps) {
+interface TimetableResetProps {
+	refreshTimetable: HeaderProps["refreshTimetable"];
+}
+
+export default function TimetableReset({ refreshTimetable }: TimetableResetProps) {
 	const {
 		urnikFriSeasonalPartOfUrl,
-		studentNumber,
 		setLetniModifiedLecturesAuditoryAndLaboratoryExcersises,
 		setZimskiModifiedLecturesAuditoryAndLaboratoryExcersises,
 		setTemporaryAuditoryAndLaboratoryExcersises,
+		setLockedLectureKey,
 	} = useBoljsiUrnikContext();
 
 	const handleTimetableReset = () => {
-		const controller = new AbortController();
-		const url = getUrnikFriUrl(urnikFriSeasonalPartOfUrl, studentNumber);
 		// fetchamo za zihr da dobimo najnovejši urnik
-		fetchTimetableFromUrnikFRI(url, controller);
+		void refreshTimetable({ force: true, reason: "manual-reset" });
 
 		// izbrišemo modified urnik za trenutni semester iz local storaga
 		if (urnikFriSeasonalPartOfUrl === "letni") {
@@ -27,6 +28,7 @@ export default function TimetableReset({ fetchTimetableFromUrnikFRI }: HeaderPro
 		// nastavi tudi temp stvari na null da se res vidi da je bil resetiran
 		// (edge case) ko npr. uporabnik med urejanjem urnika pritisne reset timetable
 		setTemporaryAuditoryAndLaboratoryExcersises(null);
+		setLockedLectureKey(null);
 	};
 
 	return (
